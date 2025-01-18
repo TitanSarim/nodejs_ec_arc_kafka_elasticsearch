@@ -6,7 +6,13 @@ export class CatalogService {
   constructor(repo: ICatalogRepository) {
     this._repo = repo;
   }
-  createProduct(input: any) {}
+  async createProduct(input: any) {
+    const data = await this._repo.create(input);
+    if (!data.id) {
+      throw new Error("Product creation failed.");
+    }
+    return data;
+  }
 
   updateProduct(input: any) {}
 
