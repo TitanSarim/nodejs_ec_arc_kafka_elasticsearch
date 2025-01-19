@@ -14,11 +14,29 @@ export class CatalogService {
     return data;
   }
 
-  updateProduct(input: any) {}
+  async updateProduct(input: any) {
+    const data = await this._repo.update(input);
+    // emit event to update record i elastic search
 
-  getProducts(limit: number, offset: number) {}
+    if (!data) {
+      throw new Error("Product update failed.");
+    }
+    return data;
+  }
 
-  getProduct(id: number) {}
+  // instead of this get product from elasticsearch
+  async getProducts(limit: number, offset: number) {
+    const products = await this._repo.find(limit, offset);
+    return products;
+  }
 
-  deleteProduct(id: number) {}
+  async getProduct(id: number) {
+    const product = await this._repo.findOne(id);
+    return product;
+  }
+
+  async deleteProduct(id: number): Promise<{ id: number }> {
+    const result = await this._repo.delete(id);
+    return { id: result };
+  }
 }
