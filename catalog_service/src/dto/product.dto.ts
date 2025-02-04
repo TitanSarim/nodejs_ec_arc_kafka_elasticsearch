@@ -15,3 +15,12 @@ export class CreateProductRequest {
   @IsNumber()
   stock: number;
 }
+
+export class UpdateProductRequest {
+  name?: string;
+
+  @Min(1)
+  price?: number;
+
+  stock?: number;
+}
