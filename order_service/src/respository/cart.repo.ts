@@ -1,11 +1,18 @@
+import { DB } from "../db/db.connection";
+import { carts } from "../db/schema";
 import { CartRepositoryType } from "../types/repo.type";
 
 const createCart = async (input: any): Promise<{}> => {
   // connect to db
+  const result = await DB.insert(carts)
+    .values({
+      customerId: 123,
+    })
+    .returning({ cartId: carts.id });
   // perform db operations
   return Promise.resolve({
     message: "Fake response from cart repository",
-    input: input,
+    input: result,
   });
 };
 
