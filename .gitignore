@@ -1,2 +1,4 @@
 */node_modules
 */.env
+/db/db-data/cataloge_postgres
+/db/db-data/order_postgres
