@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { ICatalogRepository } from "../interface/catalogRepository";
 import { Product } from "../models/product.model";
+import { NotFoundError } from "../utils";
 
 export class CatalogRepository implements ICatalogRepository {
   _primsa: PrismaClient;
@@ -26,10 +27,12 @@ export class CatalogRepository implements ICatalogRepository {
       orderBy: { id: "asc" },
     });
   }
+
+  // find one product by id
   async findOne(id: number): Promise<Product> {
     const data = await this._primsa.product.findFirst({ where: { id: id } });
     if (!data) {
-      throw new Error(`Product not found`);
+      throw new NotFoundError(`Product not found`);
     }
     return Promise.resolve(data);
   }
