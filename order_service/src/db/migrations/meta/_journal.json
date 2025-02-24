@@ -8,6 +8,13 @@
       "when": 1740073194231,
       "tag": "0000_glorious_overlord",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1740410043086,
+      "tag": "0001_orange_swordsman",
+      "breakpoints": true
     }
   ]
 }
