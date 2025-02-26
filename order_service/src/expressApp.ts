@@ -3,20 +3,41 @@ import cors from "cors";
 import orderRoutes from "./routes/order.routes";
 import cartRoutes from "./routes/cart.routes";
 import { HandleErrorWithLogger, httpLogger } from "./utils";
+import { MessageBroker } from "./utils/broker";
+import { Consumer, Producer } from "kafkajs";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+export const ExpressApp = async () => {
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
 
-app.use(httpLogger);
+  app.use(httpLogger);
 
-app.use(orderRoutes);
-app.use(cartRoutes);
+  // 1st step call kafla producer, consumer here
+  const producer = await MessageBroker.connectProducer<Producer>();
+  producer.on("producer.connect", () => {
+    console.log("Producer connected");
+  });
 
-app.use(HandleErrorWithLogger);
+  const consumer = await MessageBroker.connectConsumer<Consumer>();
+  consumer.on("consumer.connect", () => {
+    console.log("consumer connected");
+  });
 
-app.get("/", (req: Request, res: Response, _: NextFunction) => {
-  return res.status(200).json({ message: "I am healthy!" });
-});
+  // 2nd step: sucbscribe  to the topic or publish message
+  await MessageBroker.subscribe((message) => {
+    console.log("consumer recieved message");
+    console.log("Message received", message);
+  }, "OrderEvents");
 
-export default app;
+  app.use(orderRoutes);
+  app.use(cartRoutes);
+
+  app.use(HandleErrorWithLogger);
+
+  app.get("/", (req: Request, res: Response, _: NextFunction) => {
+    return res.status(200).json({ message: "I am healthy!" });
+  });
+
+  return app;
+};
