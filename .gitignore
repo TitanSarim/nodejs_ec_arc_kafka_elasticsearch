@@ -2,3 +2,4 @@
 */.env
 /db/db-data/cataloge_postgres
 /db/db-data/order_postgres
+/db/db-data/user_postgres

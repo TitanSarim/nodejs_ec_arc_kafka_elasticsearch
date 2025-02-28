@@ -20,7 +20,6 @@ const authMiddleware = async (
 
 router.post(
   "/cart",
-  authMiddleware,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const err = validateRequest<CartRequestInput>(
