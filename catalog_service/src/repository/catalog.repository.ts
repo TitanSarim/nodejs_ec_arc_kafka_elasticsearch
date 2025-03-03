@@ -36,4 +36,14 @@ export class CatalogRepository implements ICatalogRepository {
     }
     return Promise.resolve(data);
   }
+
+  findStock(ids: number[]): Promise<Product[]> {
+    return this._primsa.product.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
 }

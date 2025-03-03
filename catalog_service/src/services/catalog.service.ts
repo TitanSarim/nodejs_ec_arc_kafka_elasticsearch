@@ -39,4 +39,12 @@ export class CatalogService {
     const result = await this._repo.delete(id);
     return { id: result };
   }
+
+  async getProductStock(ids: number[]) {
+    const products = await this._repo.findStock(ids);
+    if (!products) {
+      throw new Error("Failed to fetch product stock");
+    }
+    return products;
+  }
 }

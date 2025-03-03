@@ -1,7 +1,8 @@
 import axios from "axios";
-import { APIError, AuthorizeError } from "../error";
+import { APIError, AuthorizeError, NotFoundError } from "../error";
 import { logger } from "../logger";
 import { Product } from "../../dto/productdto";
+import { User } from "../../dto/user.model";
 
 const CATELOG_BASE_URL =
   process.env.CATALOG_BASE_URL || "http://localhost:8100";
@@ -21,9 +22,20 @@ export const getProductDetails = async (productId: number) => {
   }
 };
 
+export const GetStocksDetails = async (ids: number[]) => {
+  try {
+    const response = await axios.post(`${CATELOG_BASE_URL}/products/stock`, {
+      ids,
+    });
+    return response.data as Product[];
+  } catch (error) {
+    throw new NotFoundError("Error getting stock details");
+  }
+};
+
 export const ValidateUser = async (token: string) => {
   try {
-    axios.defaults.headers.common["Authorization"] = token;
+    // axios.defaults.headers.common["Authorization"] = token;
     const response = await axios.get(`${AUTH_BASE_URL}/auth/validate`, {
       headers: {
         Authorization: token,
@@ -34,7 +46,7 @@ export const ValidateUser = async (token: string) => {
       throw new AuthorizeError("User not authenticated");
     }
 
-    return response.data;
+    return response.data as User;
   } catch (error) {
     logger.error(error);
     throw new APIError("product not found");
